@@ -42,38 +42,28 @@
       border-bottom:1px solid var(--line);
     }
 
+    /* (요구사항 1) 상단 문구 제거 -> 헤더는 네비만 남김 */
     .headerInner{
       max-width:1100px;
       margin:0 auto;
       padding:12px 14px;
       display:flex;
-      gap:12px;
       align-items:center;
-      justify-content:space-between;
+      justify-content:center;
     }
 
-    .brand{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-      min-width: 220px;
-    }
-    .brandTitle{
-      font-weight:800;
-      letter-spacing:.2px;
-      font-size:16px;
-    }
-    .brandSub{
-      color:var(--muted);
-      font-size:12px;
-    }
-
+    /* (요구사항 2) 요약/추가/내역/설정 최상단 가로 배치(작은 화면이면 가로 스크롤) */
     .navTabs{
       display:flex;
       gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
+      flex-wrap:nowrap;
+      justify-content:center;
+      overflow-x:auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom:2px;
     }
+    .navTabs::-webkit-scrollbar{ height:0; }
+
     .navBtn{
       border:1px solid var(--line);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
@@ -85,6 +75,7 @@
       box-shadow: 0 6px 16px rgba(0,0,0,.25);
       transition: .12s transform ease, .12s background ease, .12s border ease;
       white-space:nowrap;
+      flex: 0 0 auto;
     }
     .navBtn:hover{ transform: translateY(-1px); }
     .navBtn.active{
@@ -101,7 +92,6 @@
     .page{ display:none; }
     .page.active{ display:block; }
 
-    /* ---- 아래부터 추가 스타일(통합본) ---- */
     .grid{
       display:grid;
       grid-template-columns: repeat(12, 1fr);
@@ -121,6 +111,7 @@
       justify-content:space-between;
       gap:10px;
       margin-bottom:10px;
+      flex-wrap:wrap;
     }
     .cardTitle h2{
       margin:0;
@@ -164,7 +155,8 @@
     }
     .spacer{ flex:1; }
 
-    .input, select, textarea, input[type="date"], input[type="month"], input[type="number"], input[type="text"]{
+    .input, select, textarea,
+    input[type="date"], input[type="week"], input[type="month"], input[type="number"], input[type="text"]{
       width:100%;
       padding:12px 12px;
       border-radius:12px;
@@ -189,6 +181,7 @@
     .field{ grid-column: span 12; }
     @media (min-width: 720px){
       .field.half{ grid-column: span 6; }
+      .field.third{ grid-column: span 4; }
     }
     .help{
       font-size:12px;
@@ -204,6 +197,7 @@
       overflow:hidden;
       background: rgba(0,0,0,.18);
     }
+    /* 추가 페이지(기존) 세그 버튼 */
     .segBtn{
       flex:1;
       padding:10px 10px;
@@ -215,6 +209,21 @@
       letter-spacing:.2px;
     }
     .segBtn.active{
+      background: linear-gradient(180deg, rgba(36,52,107,.65), rgba(26,38,80,.35));
+    }
+
+    /* 내역 페이지용(새로 추가) 세그 버튼: 기존 .segBtn 이벤트와 충돌 방지 */
+    .segBtnAlt{
+      flex:1;
+      padding:10px 10px;
+      border:0;
+      background: transparent;
+      color:var(--text);
+      cursor:pointer;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .segBtnAlt.active{
       background: linear-gradient(180deg, rgba(36,52,107,.65), rgba(26,38,80,.35));
     }
 
@@ -401,11 +410,6 @@
 <body>
   <header class="appHeader">
     <div class="headerInner">
-      <div class="brand">
-        <div class="brandTitle">오프라인 가계부</div>
-        <div class="brandSub">브라우저 로컬 저장 · 인터넷 없이 사용</div>
-      </div>
-
       <nav class="navTabs" aria-label="페이지 이동">
         <button class="navBtn active" type="button" data-page="dashboard">요약</button>
         <button class="navBtn" type="button" data-page="add">추가</button>
@@ -419,6 +423,7 @@
     <!-- 요약 -->
     <section id="dashboard" class="page active">
       <div class="grid">
+        <!-- 월 요약 -->
         <div class="card">
           <div class="cardTitle">
             <h2>이번 달 요약</h2>
@@ -444,10 +449,37 @@
           </div>
         </div>
 
+        <!-- (요구사항 3) 일별 요약 + 날짜필터(2026-01-01 목 ~ +7일) -->
+        <div class="card">
+          <div class="cardTitle">
+            <h2>일별 요약</h2>
+            <div class="row">
+              <label class="muted" for="dailyDate" style="margin:0;">날짜</label>
+              <select id="dailyDate" style="width:auto; min-width:220px;"></select>
+            </div>
+          </div>
+
+          <div class="statGrid">
+            <div class="card stat" style="background: rgba(0,0,0,.14); box-shadow:none;">
+              <div class="statLabel">수입</div>
+              <div id="dayIncome" class="statValue good">0원</div>
+            </div>
+            <div class="card stat" style="background: rgba(0,0,0,.14); box-shadow:none;">
+              <div class="statLabel">지출</div>
+              <div id="dayExpense" class="statValue bad">0원</div>
+            </div>
+            <div class="card stat" style="background: rgba(0,0,0,.14); box-shadow:none;">
+              <div class="statLabel">잔액</div>
+              <div id="dayBalance" class="statValue">0원</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- (요구사항 6) 금액 + % 숫자 표시 -->
         <div class="card half">
           <div class="cardTitle">
             <h2>지출 상위 카테고리</h2>
-            <div class="muted" style="font-size:12px;">선택한 월 기준</div>
+            <div class="muted" style="font-size:12px;">선택한 월 기준 (금액 / %)</div>
           </div>
           <div id="topExpenseCats" class="barList"></div>
         </div>
@@ -455,7 +487,7 @@
         <div class="card half">
           <div class="cardTitle">
             <h2>수입 상위 카테고리</h2>
-            <div class="muted" style="font-size:12px;">선택한 월 기준</div>
+            <div class="muted" style="font-size:12px;">선택한 월 기준 (금액 / %)</div>
           </div>
           <div id="topIncomeCats" class="barList"></div>
         </div>
@@ -497,8 +529,9 @@
 
             <div class="field half">
               <label for="amount">금액</label>
-              <input id="amount" type="number" inputmode="numeric" min="0" step="100" placeholder="예: 12000" required />
-              <div class="help">숫자만 입력(원 단위)</div>
+              <!-- (요구사항 5) 1원부터 무한 입력: min=1, step=1 -->
+              <input id="amount" type="number" inputmode="numeric" min="1" step="1" placeholder="예: 12000" required />
+              <div class="help">1원 이상 입력</div>
             </div>
 
             <div class="field">
@@ -523,15 +556,58 @@
         <div class="card">
           <div class="cardTitle">
             <h2>내역</h2>
-            <div class="row">
-              <label class="muted" for="historyMonth" style="margin:0;">월</label>
-              <input id="historyMonth" type="month" style="width:auto; min-width:160px;" />
-              <select id="historyType" style="width:auto; min-width:120px;">
-                <option value="all">전체</option>
-                <option value="expense">지출</option>
-                <option value="income">수입</option>
-              </select>
-              <input id="historyQuery" type="text" placeholder="카테고리/메모 검색" style="width:220px; max-width: 100%;" />
+          </div>
+
+          <!-- (요구사항 4,5) 기간: 일/주/월/년도 + (그 아래) 지출/수입 선택 + (그 아래) 카테고리/메모 -->
+          <div id="historyFilters" class="card" style="background: rgba(0,0,0,.14); box-shadow:none; margin-bottom:12px;">
+            <div class="form" style="gap:10px;">
+              <div class="field">
+                <label>기간</label>
+                <div class="seg" role="tablist" aria-label="기간 선택">
+                  <button class="segBtnAlt" type="button" data-period="day">일</button>
+                  <button class="segBtnAlt" type="button" data-period="week">주</button>
+                  <button class="segBtnAlt active" type="button" data-period="month">월</button>
+                  <button class="segBtnAlt" type="button" data-period="year">년도</button>
+                </div>
+                <input type="hidden" id="historyPeriod" value="month" />
+              </div>
+
+              <!-- 기간별 입력 (선택된 것만 표시) -->
+              <div class="field half" id="wrapHistoryDay" style="display:none;">
+                <label for="historyDay">일 선택</label>
+                <input id="historyDay" type="date" />
+              </div>
+
+              <div class="field half" id="wrapHistoryWeek" style="display:none;">
+                <label for="historyWeek">주 선택</label>
+                <input id="historyWeek" type="week" />
+              </div>
+
+              <div class="field half" id="wrapHistoryMonth">
+                <label for="historyMonth">월 선택</label>
+                <input id="historyMonth" type="month" />
+              </div>
+
+              <div class="field half" id="wrapHistoryYear" style="display:none;">
+                <label for="historyYear">년도 선택</label>
+                <input id="historyYear" type="number" min="1900" step="1" placeholder="예: 2026" />
+              </div>
+
+              <!-- (요구사항 4) 월(기간) 아래에 지출/수입 구분 -->
+              <div class="field">
+                <label>구분</label>
+                <div class="seg" role="tablist" aria-label="지출/수입 선택">
+                  <button class="segBtnAlt active" type="button" data-histtype="expense">지출</button>
+                  <button class="segBtnAlt" type="button" data-histtype="income">수입</button>
+                </div>
+                <input type="hidden" id="historyType" value="expense" />
+              </div>
+
+              <!-- (요구사항 4) 카테고리/메모 입력란을 지출/수입 아래로 -->
+              <div class="field">
+                <label for="historyQuery">카테고리/메모</label>
+                <input id="historyQuery" type="text" placeholder="카테고리/메모 검색" />
+              </div>
             </div>
           </div>
 
@@ -608,6 +684,8 @@
         income: ["급여", "용돈", "부수입", "환급", "기타", "직접입력"],
       };
 
+      const DOW_KO = ["일", "월", "화", "수", "목", "금", "토"];
+
       const moneyFmt = new Intl.NumberFormat("ko-KR");
       const money = (n) => `${moneyFmt.format(Math.round(n || 0))}원`;
 
@@ -622,6 +700,13 @@
       const monthISO = (dateStr) => (dateStr || "").slice(0, 7); // YYYY-MM
 
       const uid = () => (Date.now().toString(36) + Math.random().toString(36).slice(2, 9));
+
+      function ymdFromDate(d) {
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        return `${yyyy}-${mm}-${dd}`;
+      }
 
       function loadEntries() {
         try {
@@ -672,11 +757,11 @@
 
       function setType(type) {
         typeEl.value = type;
-        $$(".segBtn").forEach((b) => b.classList.toggle("active", b.dataset.type === type));
+        $$(`.segBtn[data-type]`).forEach((b) => b.classList.toggle("active", b.dataset.type === type));
         refreshCategoryOptions();
       }
 
-      $$(".segBtn").forEach((b) => {
+      $$(`.segBtn[data-type]`).forEach((b) => {
         b.addEventListener("click", () => setType(b.dataset.type));
       });
 
@@ -687,7 +772,6 @@
         const current = categoryEl.value;
         categoryEl.innerHTML = options.map((c) => `<option value="${escapeHtmlAttr(c)}">${escapeHtml(c)}</option>`).join("");
 
-        // 기존 값이 options에 있으면 유지, 없으면 첫 값
         const has = options.includes(current);
         categoryEl.value = has ? current : options[0];
 
@@ -697,9 +781,7 @@
       function handleCategoryCustom() {
         const isCustom = categoryEl.value === "직접입력";
         categoryCustomEl.style.display = isCustom ? "block" : "none";
-        if (!isCustom) {
-          categoryCustomEl.value = "";
-        }
+        if (!isCustom) categoryCustomEl.value = "";
       }
 
       categoryEl.addEventListener("change", handleCategoryCustom);
@@ -708,7 +790,7 @@
         editingIdEl.value = entry.id;
         dateEl.value = entry.date;
         setType(entry.type);
-        // 카테고리 처리(직접입력 포함)
+
         const list = CATEGORIES[entry.type] || [];
         if (list.includes(entry.category)) {
           categoryEl.value = entry.category;
@@ -751,15 +833,16 @@
         const date = dateEl.value || todayISO();
 
         let category = categoryEl.value;
-        if (category === "직접입력") {
-          category = (categoryCustomEl.value || "").trim();
-        }
+        if (category === "직접입력") category = (categoryCustomEl.value || "").trim();
+
         const amount = Number(amountEl.value || 0);
         const memo = (memoEl.value || "").trim();
 
         if (!date) return toast("날짜를 입력해줘");
         if (!category) return toast("카테고리를 입력해줘");
-        if (!Number.isFinite(amount) || amount <= 0) return toast("금액은 0보다 크게 입력해줘");
+
+        // (요구사항 5) 1원부터 무한
+        if (!Number.isFinite(amount) || amount < 1) return toast("금액은 1원 이상 입력해줘");
 
         const editingId = editingIdEl.value;
 
@@ -791,33 +874,144 @@
       });
 
       // ---------- 내역(필터/리스트) ----------
+      const historyPeriodEl = $("#historyPeriod");
+      const historyDayEl = $("#historyDay");
+      const historyWeekEl = $("#historyWeek");
       const historyMonthEl = $("#historyMonth");
+      const historyYearEl = $("#historyYear");
       const historyTypeEl = $("#historyType");
       const historyQueryEl = $("#historyQuery");
+
+      const wrapHistoryDay = $("#wrapHistoryDay");
+      const wrapHistoryWeek = $("#wrapHistoryWeek");
+      const wrapHistoryMonth = $("#wrapHistoryMonth");
+      const wrapHistoryYear = $("#wrapHistoryYear");
+
       const historyListEl = $("#historyList");
       const historyCountEl = $("#historyCount");
       const historySumExpenseEl = $("#historySumExpense");
       const historySumIncomeEl = $("#historySumIncome");
 
-      function getFilteredEntries({ month, type, q }) {
-        const mq = (q || "").trim().toLowerCase();
+      function setHistoryPeriod(period) {
+        historyPeriodEl.value = period;
+
+        // 버튼 active
+        $$("#historyFilters button[data-period]").forEach((b) => {
+          b.classList.toggle("active", b.dataset.period === period);
+        });
+
+        // 입력 표시
+        wrapHistoryDay.style.display = (period === "day") ? "block" : "none";
+        wrapHistoryWeek.style.display = (period === "week") ? "block" : "none";
+        wrapHistoryMonth.style.display = (period === "month") ? "block" : "none";
+        wrapHistoryYear.style.display = (period === "year") ? "block" : "none";
+
+        renderHistory();
+      }
+
+      function setHistoryType(type) {
+        historyTypeEl.value = type;
+        $$("#historyFilters button[data-histtype]").forEach((b) => {
+          b.classList.toggle("active", b.dataset.histtype === type);
+        });
+        renderHistory();
+      }
+
+      $$("#historyFilters button[data-period]").forEach((btn) => {
+        btn.addEventListener("click", () => setHistoryPeriod(btn.dataset.period));
+      });
+
+      $$("#historyFilters button[data-histtype]").forEach((btn) => {
+        btn.addEventListener("click", () => setHistoryType(btn.dataset.histtype));
+      });
+
+      // ISO Week 계산(week input용)
+      function isoWeekInfo(date) {
+        // UTC 기준
+        const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        // 목요일을 기준으로 ISO week-year 결정
+        const dayNum = d.getUTCDay() || 7; // 1..7 (Mon..Sun)
+        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+        const isoYear = d.getUTCFullYear();
+        const yearStart = new Date(Date.UTC(isoYear, 0, 1));
+        const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        return { isoYear, weekNo };
+      }
+
+      function toISOWeekString(date) {
+        const { isoYear, weekNo } = isoWeekInfo(date);
+        return `${isoYear}-W${String(weekNo).padStart(2, "0")}`;
+      }
+
+      function isoWeekStartEnd(weekStr) {
+        // weekStr: "YYYY-Www"
+        if (!weekStr || !/^(\d{4})-W(\d{2})$/.test(weekStr)) return null;
+        const [y, w] = weekStr.split("-W");
+        const isoYear = Number(y);
+        const isoWeek = Number(w);
+
+        // ISO week의 월요일 계산
+        const simple = new Date(Date.UTC(isoYear, 0, 1 + (isoWeek - 1) * 7));
+        const dow = simple.getUTCDay(); // 0=Sun..6=Sat
+        const monday = new Date(simple);
+        if (dow <= 4) {
+          monday.setUTCDate(simple.getUTCDate() - (dow === 0 ? 6 : (dow - 1)));
+        } else {
+          monday.setUTCDate(simple.getUTCDate() + (8 - dow));
+        }
+
+        const sunday = new Date(monday);
+        sunday.setUTCDate(monday.getUTCDate() + 6);
+
+        const start = `${monday.getUTCFullYear()}-${String(monday.getUTCMonth() + 1).padStart(2,"0")}-${String(monday.getUTCDate()).padStart(2,"0")}`;
+        const end = `${sunday.getUTCFullYear()}-${String(sunday.getUTCMonth() + 1).padStart(2,"0")}-${String(sunday.getUTCDate()).padStart(2,"0")}`;
+        return { start, end };
+      }
+
+      function getFilteredEntriesHistory() {
+        const period = historyPeriodEl.value; // day/week/month/year
+        const type = historyTypeEl.value; // expense/income
+        const q = (historyQueryEl.value || "").trim().toLowerCase();
+
+        const dayVal = historyDayEl.value;
+        const weekVal = historyWeekEl.value;
+        const monthVal = historyMonthEl.value;
+        const yearVal = String(historyYearEl.value || "").trim();
+
+        let weekRange = null;
+        if (period === "week") weekRange = isoWeekStartEnd(weekVal);
+
         return entries.filter((e) => {
-          if (month && monthISO(e.date) !== month) return false;
-          if (type && type !== "all" && e.type !== type) return false;
-          if (mq) {
-            const hay = `${e.category || ""} ${e.memo || ""}`.toLowerCase();
-            if (!hay.includes(mq)) return false;
+          // 기간 필터
+          if (period === "day") {
+            if (!dayVal) return false;
+            if (e.date !== dayVal) return false;
+          } else if (period === "week") {
+            if (!weekRange) return false;
+            if (e.date < weekRange.start || e.date > weekRange.end) return false;
+          } else if (period === "month") {
+            if (!monthVal) return false;
+            if (monthISO(e.date) !== monthVal) return false;
+          } else if (period === "year") {
+            if (!yearVal) return false;
+            if ((e.date || "").slice(0, 4) !== yearVal) return false;
           }
+
+          // 구분 필터(지출/수입)
+          if (e.type !== type) return false;
+
+          // 검색
+          if (q) {
+            const hay = `${e.category || ""} ${e.memo || ""}`.toLowerCase();
+            if (!hay.includes(q)) return false;
+          }
+
           return true;
         });
       }
 
       function renderHistory() {
-        const month = historyMonthEl.value;
-        const type = historyTypeEl.value;
-        const q = historyQueryEl.value;
-
-        const list = getFilteredEntries({ month, type, q });
+        const list = getFilteredEntriesHistory();
 
         let sumExpense = 0;
         let sumIncome = 0;
@@ -834,7 +1028,7 @@
           historyListEl.innerHTML = `
             <div class="empty">
               조건에 맞는 내역이 없어.<br/>
-              상단 필터를 바꾸거나 "추가"에서 내역을 입력해줘.
+              기간/구분/검색을 바꿔줘.
             </div>
           `;
           return;
@@ -900,7 +1094,7 @@
         }
       });
 
-      [historyMonthEl, historyTypeEl, historyQueryEl].forEach((el) => {
+      [historyDayEl, historyWeekEl, historyMonthEl, historyYearEl, historyQueryEl].forEach((el) => {
         el.addEventListener("input", () => renderHistory());
       });
 
@@ -914,8 +1108,13 @@
       const topExpenseCatsEl = $("#topExpenseCats");
       const topIncomeCatsEl = $("#topIncomeCats");
 
+      // (요구사항 3) 일별 요약 요소
+      const dailyDateEl = $("#dailyDate");
+      const dayIncomeEl = $("#dayIncome");
+      const dayExpenseEl = $("#dayExpense");
+      const dayBalanceEl = $("#dayBalance");
+
       function sumByCategory(list) {
-        /** @type {Record<string, number>} */
         const map = {};
         for (const e of list) {
           const k = (e.category || "기타").trim() || "기타";
@@ -924,16 +1123,17 @@
         return map;
       }
 
-      function renderBars(container, map, emptyText) {
-        const arr = Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 8);
-        if (arr.length === 0) {
+      // (요구사항 6) 금액 + 퍼센트(%)
+      function renderBars(container, map, totalAmount, emptyText) {
+        const entriesArr = Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+        if (!totalAmount || totalAmount <= 0 || entriesArr.length === 0) {
           container.innerHTML = `<div class="empty">${escapeHtml(emptyText)}</div>`;
           return;
         }
-        const max = Math.max(...arr.map((x) => x[1]), 1);
 
-        container.innerHTML = arr.map(([name, val]) => {
-          const pct = Math.max(0, Math.min(100, (val / max) * 100));
+        container.innerHTML = entriesArr.map(([name, val]) => {
+          const pct = Math.max(0, Math.min(100, (val / totalAmount) * 100));
           return `
             <div class="barRow">
               <div>
@@ -941,9 +1141,11 @@
                   <span>${escapeHtml(name)}</span>
                   <span>${money(val)}</span>
                 </div>
-                <div class="barTrack"><div class="barFill" style="width:${pct.toFixed(1)}%"></div></div>
+                <div class="barTrack">
+                  <div class="barFill" style="width:${pct.toFixed(1)}%"></div>
+                </div>
               </div>
-              <div class="barAmt">${money(val)}</div>
+              <div class="barAmt">${pct.toFixed(1)}%</div>
             </div>
           `;
         }).join("");
@@ -978,12 +1180,54 @@
         dashBalanceEl.classList.toggle("good", balance > 0);
         dashBalanceEl.classList.toggle("bad", balance < 0);
 
-        renderBars(topExpenseCatsEl, sumByCategory(expenseList), "이번 달 지출 내역이 없어.");
-        renderBars(topIncomeCatsEl, sumByCategory(incomeList), "이번 달 수입 내역이 없어.");
+        renderBars(topExpenseCatsEl, sumByCategory(expenseList), expense, "이번 달 지출 내역이 없어.");
+        renderBars(topIncomeCatsEl, sumByCategory(incomeList), income, "이번 달 수입 내역이 없어.");
       }
 
+      // (요구사항 3) 2026-01-01(목) 시작 +7일(총 8개 옵션)
+      function initDailyDateOptions() {
+        const start = new Date(2026, 0, 1); // 2026-01-01
+        const days = 8; // 0..7
+
+        dailyDateEl.innerHTML = "";
+        for (let i = 0; i < days; i++) {
+          const d = new Date(start);
+          d.setDate(start.getDate() + i);
+          const ymd = ymdFromDate(d);
+          const dow = DOW_KO[d.getDay()];
+          const opt = document.createElement("option");
+          opt.value = ymd;
+          opt.textContent = `${ymd} (${dow})`;
+          dailyDateEl.appendChild(opt);
+        }
+
+        // 기본: 2026-01-01(목)
+        dailyDateEl.value = "2026-01-01";
+      }
+
+      function renderDailySummary() {
+        const selected = dailyDateEl.value;
+        const dayEntries = entries.filter((e) => e.date === selected);
+
+        let income = 0;
+        let expense = 0;
+        for (const e of dayEntries) {
+          if (e.type === "expense") expense += e.amount || 0;
+          else income += e.amount || 0;
+        }
+        const balance = income - expense;
+
+        dayIncomeEl.textContent = money(income);
+        dayExpenseEl.textContent = money(expense);
+        dayBalanceEl.textContent = money(balance);
+        dayBalanceEl.classList.toggle("good", balance > 0);
+        dayBalanceEl.classList.toggle("bad", balance < 0);
+      }
+
+      dailyDateEl.addEventListener("change", renderDailySummary);
+
       dashMonthEl.addEventListener("input", () => {
-        // 히스토리 월도 같이 맞춰주면 편함
+        // 히스토리 기본이 월일 때 편하게 맞춰줌
         historyMonthEl.value = dashMonthEl.value;
         renderAll();
       });
@@ -1049,16 +1293,16 @@
             memo: String(x.memo || ""),
             createdAt: Number(x.createdAt || Date.now()),
           }))
-          .filter((x) => x.date && Number.isFinite(x.amount) && x.amount >= 0);
+          // (요구사항 5) 1원 이상만 허용
+          .filter((x) => x.date && Number.isFinite(x.amount) && x.amount >= 1);
 
-        if (cleaned.length === 0) return toast("가져올 유효한 데이터가 없어");
+        if (cleaned.length === 0) return toast("가져올 유효한 데이터가 없어(금액은 1원 이상)");
 
         const merge = confirm("가져온 데이터를 기존 내역에 합칠까?\n확인: 합치기\n취소: 덮어쓰기");
         if (merge) {
           const byId = new Map(entries.map((e) => [e.id, e]));
           for (const e of cleaned) {
             if (byId.has(e.id)) {
-              // id 충돌이면 새 id로 추가
               byId.set(uid(), { ...e, id: uid(), createdAt: Date.now() });
             } else {
               byId.set(e.id, e);
@@ -1095,7 +1339,6 @@
           .replaceAll("'", "&#039;");
       }
       function escapeHtmlAttr(str) {
-        // 속성용(기본 escape로 충분)
         return escapeHtml(str).replaceAll("`", "&#096;");
       }
       function csvCell(v) {
@@ -1106,21 +1349,35 @@
 
       // ---------- 초기값/렌더 ----------
       function init() {
-        // 기본 날짜/월
-        dateEl.value = todayISO();
+        const today = todayISO();
+        dateEl.value = today;
 
-        const m = monthISO(todayISO());
+        const m = monthISO(today);
         dashMonthEl.value = m;
+
+        // 내역 필터 기본값
         historyMonthEl.value = m;
+        historyDayEl.value = today;
+        historyWeekEl.value = toISOWeekString(new Date());
+        historyYearEl.value = String(new Date().getFullYear());
 
         setType("expense");
         refreshCategoryOptions();
+
+        // (요구사항 3) 일별요약 날짜 옵션 생성
+        initDailyDateOptions();
+
+        // 내역 기본: 월
+        setHistoryPeriod("month");
+        // 내역 기본: 지출
+        setHistoryType("expense");
 
         renderAll();
       }
 
       function renderAll() {
         renderDashboard();
+        renderDailySummary();
         renderHistory();
       }
 
@@ -1128,4 +1385,4 @@
     })();
   </script>
 </body>
-  </html>
+</html>
