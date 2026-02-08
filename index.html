@@ -706,6 +706,11 @@
       const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
       const STORAGE_KEY = "ledger_entries_v1";
+      // ✅ 여기에 "현재 사용 중인 내역(JSON 배열)"을 붙여넣으면 됨
+// (붙여넣은 데이터는 localStorage가 비어있을 때 1회 자동 주입)
+const INLINE_ENTRIES = [
+  /* 여기에 붙여넣기 */
+];
 
       const CATEGORIES = {
         expense: ["식비", "교통", "주거/통신", "생활", "의료", "문화", "교육", "쇼핑", "여행", "기타", "직접입력"],
@@ -787,7 +792,17 @@
       function saveEntries(entries) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
       }
+      // ✅ localStorage가 비어있을 때만 INLINE_ENTRIES를 1회 주입
+function bootstrapInlineEntriesIfEmpty() {
+  if (!Array.isArray(INLINE_ENTRIES) || INLINE_ENTRIES.length === 0) return;
 
+  const existing = loadEntries();
+  if (Array.isArray(existing) && existing.length > 0) return; // 이미 데이터 있으면 주입 안함(중복 방지)
+
+  saveEntries(INLINE_ENTRIES);
+}
+bootstrapInlineEntriesIfEmpty();
+let entries = loadEntries();
       let entries = loadEntries();
       entries.sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.createdAt || 0) - (a.createdAt || 0));
 
