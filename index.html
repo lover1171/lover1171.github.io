@@ -10,20 +10,15 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="apple-touch-icon" href="/icons/icon-192.png" />
 
+  <!-- ✅ XLSX(엑셀) 라이브러리: 루트에 xlsx.full.min.js 필요 -->
+  <script src="/xlsx.full.min.js"></script>
+
   <style>
     :root{
-      --bg:#0b1020;
-      --panel:#121a33;
-      --panel2:#0f1630;
-      --text:#e9ecf5;
-      --muted:#aab2d5;
-      --line:rgba(255,255,255,.10);
-      --good:#2dd4bf;
-      --bad:#fb7185;
-      --warn:#fbbf24;
+      --bg:#0b1020; --text:#e9ecf5; --muted:#aab2d5; --line:rgba(255,255,255,.10);
+      --good:#2dd4bf; --bad:#fb7185; --warn:#fbbf24;
       --shadow: 0 10px 30px rgba(0,0,0,.35);
     }
-
     *{ box-sizing:border-box; }
     body{
       margin:0;
@@ -32,36 +27,21 @@
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Apple SD Gothic Neo, "Noto Sans KR", Arial, sans-serif;
       line-height:1.4;
     }
-
     .appHeader{
-      position:sticky;
-      top:0;
-      z-index:10;
+      position:sticky; top:0; z-index:10;
       backdrop-filter: blur(10px);
       background: rgba(10, 14, 30, .72);
       border-bottom:1px solid var(--line);
     }
-
     .headerInner{
-      max-width:1100px;
-      margin:0 auto;
-      padding:12px 14px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      max-width:1100px; margin:0 auto; padding:12px 14px;
+      display:flex; align-items:center; justify-content:center;
     }
-
     .navTabs{
-      display:flex;
-      gap:8px;
-      flex-wrap:nowrap;
-      justify-content:center;
-      overflow-x:auto;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom:2px;
+      display:flex; gap:8px; flex-wrap:nowrap; justify-content:center;
+      overflow-x:auto; -webkit-overflow-scrolling: touch; padding-bottom:2px;
     }
     .navTabs::-webkit-scrollbar{ height:0; }
-
     .navBtn{
       border:1px solid var(--line);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
@@ -81,20 +61,11 @@
       border-color: rgba(45,212,191,.35);
     }
 
-    main{
-      max-width:1100px;
-      margin:0 auto;
-      padding:18px 14px 40px;
-    }
-
+    main{ max-width:1100px; margin:0 auto; padding:18px 14px 40px; }
     .page{ display:none; }
     .page.active{ display:block; }
 
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap:12px;
-    }
+    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:12px; }
     .card{
       grid-column: span 12;
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
@@ -104,21 +75,13 @@
       padding:14px;
     }
     .cardTitle{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:10px;
-      flex-wrap:wrap;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; margin-bottom:10px; flex-wrap:wrap;
     }
     .cardTitle h2{ margin:0; font-size:14px; letter-spacing:.2px; }
     .muted{ color:var(--muted); }
 
-    .statGrid{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap:12px;
-    }
+    .statGrid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:12px; }
     .stat{ grid-column: span 12; padding:14px; }
     @media (min-width: 720px){
       .stat{ grid-column: span 4; }
@@ -130,12 +93,7 @@
     .bad{ color:var(--bad); }
     .warn{ color:var(--warn); }
 
-    .row{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
+    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
     .spacer{ flex:1; }
 
     select, textarea,
@@ -150,18 +108,9 @@
       outline:none;
     }
     select{ cursor:pointer; }
-    label{
-      display:block;
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
+    label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
 
-    .form{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap:12px;
-    }
+    .form{ display:grid; grid-template-columns: repeat(12, 1fr); gap:12px; }
     .field{ grid-column: span 12; }
     @media (min-width: 720px){
       .field.half{ grid-column: span 6; }
@@ -170,34 +119,23 @@
     .help{ font-size:12px; color:var(--muted); margin-top:6px; }
 
     .seg{
-      display:flex;
-      width:100%;
+      display:flex; width:100%;
       border:1px solid var(--line);
       border-radius:12px;
       overflow:hidden;
       background: rgba(0,0,0,.18);
     }
     .segBtn, .segBtnAlt{
-      flex:1;
-      padding:10px 10px;
-      border:0;
-      background: transparent;
-      color:var(--text);
-      cursor:pointer;
-      font-weight:800;
-      letter-spacing:.2px;
+      flex:1; padding:10px 10px; border:0; background: transparent;
+      color:var(--text); cursor:pointer; font-weight:800; letter-spacing:.2px;
     }
     .segBtn.active, .segBtnAlt.active{
       background: linear-gradient(180deg, rgba(36,52,107,.65), rgba(26,38,80,.35));
     }
 
     .actions{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:flex-end;
-      flex-wrap:wrap;
-      margin-top:4px;
+      display:flex; gap:10px; align-items:center; justify-content:flex-end;
+      flex-wrap:wrap; margin-top:4px;
     }
     .btn{
       border:1px solid var(--line);
@@ -221,77 +159,36 @@
     }
 
     .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:6px 10px;
-      border-radius:999px;
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 10px; border-radius:999px;
       background: rgba(27,39,80,.65);
       border:1px solid var(--line);
-      font-size:12px;
-      color:var(--text);
-      font-weight:800;
+      font-size:12px; color:var(--text); font-weight:800;
     }
     .chip.good{ color: var(--good); }
     .chip.bad{ color: var(--bad); }
 
-    .list{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
+    .list{ display:flex; flex-direction:column; gap:10px; }
     .item{
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-      justify-content:space-between;
-      padding:12px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background: rgba(0,0,0,.18);
+      display:flex; gap:12px; align-items:flex-start; justify-content:space-between;
+      padding:12px; border:1px solid var(--line); border-radius:14px; background: rgba(0,0,0,.18);
     }
     .itemLeft{ min-width:0; flex:1; }
-    .itemMeta{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      flex-wrap:wrap;
-      margin-bottom:4px;
-    }
+    .itemMeta{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:4px; }
     .itemTitle{
-      font-weight:900;
-      letter-spacing:.2px;
-      margin-bottom:4px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
+      font-weight:900; letter-spacing:.2px; margin-bottom:4px;
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
     }
     .itemMemo{
-      color:var(--muted);
-      font-size:12px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
+      color:var(--muted); font-size:12px;
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
     }
     .itemRight{
-      text-align:right;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      align-items:flex-end;
-      min-width: 120px;
+      text-align:right; display:flex; flex-direction:column; gap:8px;
+      align-items:flex-end; min-width: 120px;
     }
-    .amount{
-      font-size:16px;
-      font-weight:950;
-      letter-spacing:.2px;
-    }
-    .miniActions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
+    .amount{ font-size:16px; font-weight:950; letter-spacing:.2px; }
+    .miniActions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
     .miniBtn{
       border:1px solid var(--line);
       background: rgba(0,0,0,.18);
@@ -306,67 +203,36 @@
     .miniBtn.danger{ border-color: rgba(251,113,133,.35); }
 
     .empty{
-      text-align:center;
-      color:var(--muted);
-      padding:26px 10px;
-      border:1px dashed var(--line);
-      border-radius:16px;
-      background: rgba(0,0,0,.10);
+      text-align:center; color:var(--muted); padding:26px 10px;
+      border:1px dashed var(--line); border-radius:16px; background: rgba(0,0,0,.10);
     }
 
     .barList{ display:flex; flex-direction:column; gap:10px; }
     .barRow{ display:grid; grid-template-columns: 1fr 90px; gap:10px; align-items:center; }
     .barLabel{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:6px;
+      display:flex; justify-content:space-between; gap:10px;
+      font-size:12px; color:var(--muted); margin-bottom:6px;
     }
     .barTrack{
-      height:10px;
-      border-radius:999px;
-      background: rgba(255,255,255,.08);
-      overflow:hidden;
-      border:1px solid var(--line);
+      height:10px; border-radius:999px; background: rgba(255,255,255,.08);
+      overflow:hidden; border:1px solid var(--line);
     }
     .barFill{
-      height:100%;
-      width:0%;
-      border-radius:999px;
+      height:100%; width:0%; border-radius:999px;
       background: linear-gradient(90deg, rgba(251,113,133,.75), rgba(45,212,191,.75));
     }
-    .barAmt{
-      text-align:right;
-      font-weight:900;
-      font-size:12px;
-      color:var(--text);
-      white-space:nowrap;
-    }
+    .barAmt{ text-align:right; font-weight:900; font-size:12px; color:var(--text); white-space:nowrap; }
 
     .toast{
-      position:fixed;
-      left:50%;
-      bottom:18px;
-      transform: translateX(-50%);
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background: rgba(10, 14, 30, .88);
-      box-shadow: var(--shadow);
-      color:var(--text);
-      font-weight:800;
-      font-size:12px;
-      opacity:0;
-      pointer-events:none;
+      position:fixed; left:50%; bottom:18px; transform: translateX(-50%);
+      padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background: rgba(10, 14, 30, .88); box-shadow: var(--shadow);
+      color:var(--text); font-weight:800; font-size:12px;
+      opacity:0; pointer-events:none;
       transition: .18s opacity ease, .18s transform ease;
       z-index:9998;
     }
-    .toast.show{
-      opacity:1;
-      transform: translateX(-50%) translateY(-2px);
-    }
+    .toast.show{ opacity:1; transform: translateX(-50%) translateY(-2px); }
   </style>
 </head>
 
@@ -540,9 +406,7 @@
     <section id="history" class="page">
       <div class="grid">
         <div class="card">
-          <div class="cardTitle">
-            <h2>내역</h2>
-          </div>
+          <div class="cardTitle"><h2>내역</h2></div>
 
           <div id="historyFilters" class="card" style="background: rgba(0,0,0,.14); box-shadow:none; margin-bottom:12px;">
             <div class="form" style="gap:10px;">
@@ -572,22 +436,18 @@
                 <input id="historyMonth" type="month" />
               </div>
 
-              <!-- ✅ 년도: 입력도 가능 + 선택(모달)도 가능 -->
+              <!-- ✅ 년도: 입력 + 클릭 선택 -->
               <div class="field half" id="wrapHistoryYear" style="display:none;">
                 <label for="historyYear">년도 선택</label>
-                <div class="row" style="gap:10px;">
-                  <input
-                    id="historyYear"
-                    type="text"
-                    inputmode="numeric"
-                    pattern="[0-9]*"
-                    maxlength="4"
-                    placeholder="예: 2026"
-                    style="flex:1; min-width:160px;"
-                  />
-                  <button class="btn" type="button" id="openYearPicker">선택</button>
-                </div>
-                <div class="help">4자리 직접 입력 또는 “선택”으로 연도만 고르기</div>
+                <input
+                  id="historyYear"
+                  type="text"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  maxlength="4"
+                  placeholder="예: 2026"
+                />
+                <div class="help">직접 입력(4자리) 또는 클릭해서 선택</div>
               </div>
 
               <div class="field">
@@ -599,7 +459,7 @@
                 <input type="hidden" id="historyType" value="expense" />
               </div>
 
-              <!-- ✅ 카테고리/메모: 입력 + 선택(자동완성 datalist) -->
+              <!-- ✅ 카테고리/메모: 입력 + 선택(자동완성) -->
               <div class="field">
                 <label for="historyQuery">카테고리/메모</label>
                 <input id="historyQuery" type="text" placeholder="카테고리/메모 검색" list="historyCategoryList" />
@@ -627,12 +487,13 @@
         <div class="card">
           <div class="cardTitle">
             <h2>백업 / 복원</h2>
-            <div class="muted" style="font-size:12px;">JSON/CSV 내보내기 + JSON 가져오기</div>
+            <div class="muted" style="font-size:12px;">JSON/CSV/XLSX 내보내기 + JSON 가져오기</div>
           </div>
 
           <div class="row" style="gap:10px; margin-bottom:12px;">
             <button class="btn primary" type="button" id="exportJson">JSON 내보내기</button>
             <button class="btn" type="button" id="exportCsv">CSV 내보내기</button>
+            <button class="btn" type="button" id="exportXlsx">엑셀(xlsx) 내보내기</button>
           </div>
 
           <div class="card" style="background: rgba(0,0,0,.14); box-shadow:none;">
@@ -826,22 +687,23 @@
       }
 
       function showBackupModal(text) {
-        const wrap = document.getElementById("backupModal");
-        const ta = document.getElementById("backupText");
+        const wrap = $("#backupModal");
+        const ta = $("#backupText");
         wrap.style.display = "flex";
         ta.value = text;
       }
 
       function wireBackupModal() {
-        const wrap = document.getElementById("backupModal");
-        document.getElementById("backupCloseBtn").onclick = () => (wrap.style.display = "none");
-        document.getElementById("backupCopyBtn").onclick = async () => {
-          const t = document.getElementById("backupText").value;
+        const wrap = $("#backupModal");
+        $("#backupCloseBtn").onclick = () => (wrap.style.display = "none");
+        $("#backupCopyBtn").onclick = async () => {
+          const t = $("#backupText").value;
           try { await navigator.clipboard.writeText(t); toast("복사 완료"); }
           catch { toast("복사 실패: 길게 눌러 전체 선택 후 복사"); }
         };
       }
 
+      // Share → Clipboard → 모달
       async function smartExport(filename, content, mime) {
         const blob = new Blob([content], { type: mime });
         const file = new File([blob], filename, { type: mime });
@@ -871,7 +733,7 @@
       }
       $$(".navBtn").forEach((btn) => btn.addEventListener("click", () => setPage(btn.dataset.page)));
 
-      // 폼(추가/수정)
+      // 추가/수정
       const entryForm = $("#entryForm");
       const editingIdEl = $("#editingId");
       const typeEl = $("#type");
@@ -894,6 +756,7 @@
         const type = typeEl.value;
         const options = CATEGORIES[type] || ["기타", "직접입력"];
         const current = categoryEl.value;
+
         categoryEl.innerHTML = options.map((c) => `<option value="${escapeHtmlAttr(c)}">${escapeHtml(c)}</option>`).join("");
         categoryEl.value = options.includes(current) ? current : options[0];
         handleCategoryCustom();
@@ -992,7 +855,6 @@
       const historyWeekEl = $("#historyWeek");
       const historyMonthEl = $("#historyMonth");
       const historyYearEl = $("#historyYear");
-      const openYearPickerBtn = $("#openYearPicker");
       const historyTypeEl = $("#historyType");
       const historyQueryEl = $("#historyQuery");
 
@@ -1006,7 +868,7 @@
       const historySumExpenseEl = $("#historySumExpense");
       const historySumIncomeEl = $("#historySumIncome");
 
-      // ✅ 내역 카테고리 선택(datalist)
+      // ✅ 카테고리 자동완성 목록
       const historyCategoryListEl = $("#historyCategoryList");
       function refreshHistoryCategoryDatalist() {
         if (!historyCategoryListEl) return;
@@ -1047,7 +909,7 @@
       $$("#historyFilters button[data-period]").forEach((btn) => btn.addEventListener("click", () => setHistoryPeriod(btn.dataset.period)));
       $$("#historyFilters button[data-histtype]").forEach((btn) => btn.addEventListener("click", () => setHistoryType(btn.dataset.histtype)));
 
-      // ISO Week 계산
+      // ISO Week
       function isoWeekInfo(date) {
         const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
         const dayNum = d.getUTCDay() || 7;
@@ -1081,91 +943,15 @@
         return { start, end };
       }
 
-      // ✅ 연도 모달 로직
-      const yearModal = $("#yearModal");
-      const yearGrid = $("#yearGrid");
-      const yearPrev = $("#yearPrev");
-      const yearNext = $("#yearNext");
-      const yearClose = $("#yearClose");
-      const yearRangeLabel = $("#yearRangeLabel");
-
-      const YEAR_MIN = 1900;
-      const YEAR_MAX = 2100;
-      const YEAR_PAGE = 20;
-
-      let yearPageStart = Math.max(YEAR_MIN, (new Date().getFullYear() - 5));
-
-      function clampYearPageStart(v){
-        const maxStart = YEAR_MAX - (YEAR_PAGE - 1);
-        return Math.min(Math.max(v, YEAR_MIN), maxStart);
-      }
-
-      function renderYearGrid(){
-        const start = clampYearPageStart(yearPageStart);
-        const end = Math.min(YEAR_MAX, start + YEAR_PAGE - 1);
-        yearRangeLabel.textContent = `${start} ~ ${end}`;
-
-        const selected = Number((historyYearEl.value || "").trim());
-        yearGrid.innerHTML = "";
-
-        for (let y = start; y <= end; y++) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "btn";
-          btn.textContent = String(y);
-          if (Number.isFinite(selected) && selected === y) btn.classList.add("primary");
-          btn.addEventListener("click", () => {
-            historyYearEl.value = String(y);
-            closeYearModal();
-            renderHistory();
-          });
-          yearGrid.appendChild(btn);
-        }
-      }
-
-      function openYearModal() {
-        const current = Number((historyYearEl.value || "").trim());
-        if (Number.isFinite(current) && current >= YEAR_MIN && current <= YEAR_MAX) {
-          yearPageStart = clampYearPageStart(current - Math.floor(YEAR_PAGE/2));
-        } else {
-          yearPageStart = clampYearPageStart(new Date().getFullYear() - 5);
-        }
-        renderYearGrid();
-        yearModal.style.display = "flex";
-      }
-
-      function closeYearModal() {
-        yearModal.style.display = "none";
-      }
-
-      openYearPickerBtn.addEventListener("click", openYearModal);
-      yearPrev.addEventListener("click", () => { yearPageStart = clampYearPageStart(yearPageStart - YEAR_PAGE); renderYearGrid(); });
-      yearNext.addEventListener("click", () => { yearPageStart = clampYearPageStart(yearPageStart + YEAR_PAGE); renderYearGrid(); });
-      yearClose.addEventListener("click", closeYearModal);
-      yearModal.addEventListener("click", (e) => { if (e.target === yearModal) closeYearModal(); });
-
-      // ✅ 연도 직접 입력(4자리 숫자)
-      historyYearEl.addEventListener("input", () => {
-        const digits = (historyYearEl.value || "").replace(/\D/g, "").slice(0, 4);
-        if (historyYearEl.value !== digits) historyYearEl.value = digits;
-        if (digits.length === 4) renderHistory();
-      });
-      historyYearEl.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          if ((historyYearEl.value || "").trim().length === 4) renderHistory();
-        }
-      });
-
       function getFilteredEntriesHistory() {
-        const period = historyPeriodEl.value; // day/week/month/year
-        const type = historyTypeEl.value; // expense/income
+        const period = historyPeriodEl.value;
+        const type = historyTypeEl.value;
         const q = (historyQueryEl.value || "").trim().toLowerCase();
 
         const dayVal = historyDayEl.value;
         const weekVal = historyWeekEl.value;
         const monthVal = historyMonthEl.value;
-        const yearVal = String(historyYearEl.value || "").trim(); // ✅ text
+        const yearVal = String(historyYearEl.value || "").trim();
 
         let weekRange = null;
         if (period === "week") weekRange = isoWeekStartEnd(weekVal);
@@ -1233,24 +1019,15 @@
       function renderHistory() {
         const list = getFilteredEntriesHistory();
 
-        let sumExpense = 0;
-        let sumIncome = 0;
-        list.forEach((e) => {
-          if (e.type === "expense") sumExpense += e.amount;
-          else sumIncome += e.amount;
-        });
+        let sumExpense = 0, sumIncome = 0;
+        list.forEach((e) => { if (e.type === "expense") sumExpense += e.amount; else sumIncome += e.amount; });
 
         historyCountEl.textContent = `${list.length}건`;
         historySumExpenseEl.textContent = `지출 ${money(sumExpense)}`;
         historySumIncomeEl.textContent = `수입 ${money(sumIncome)}`;
 
         if (list.length === 0) {
-          historyListEl.innerHTML = `
-            <div class="empty">
-              조건에 맞는 내역이 없어.<br/>
-              기간/구분/검색을 바꿔줘.
-            </div>
-          `;
+          historyListEl.innerHTML = `<div class="empty">조건에 맞는 내역이 없어.<br/>기간/구분/검색을 바꿔줘.</div>`;
           return;
         }
 
@@ -1266,7 +1043,6 @@
 
         const id = item.getAttribute("data-id");
         const action = btn.getAttribute("data-action");
-
         const entry = entries.find((x) => x.id === id);
         if (!entry) return toast("대상을 찾을 수 없어");
 
@@ -1278,12 +1054,25 @@
           toast("삭제 완료");
           return;
         }
-
         if (action === "edit") startEdit(entry);
       });
 
+      // 필터 입력 반응
       [historyDayEl, historyWeekEl, historyMonthEl, historyQueryEl].forEach((el) => {
         el.addEventListener("input", () => renderHistory());
+      });
+
+      // ✅ year 직접 입력: 숫자만/4자리만 + 4자리면 적용
+      historyYearEl.addEventListener("input", () => {
+        const digits = (historyYearEl.value || "").replace(/\D/g, "").slice(0, 4);
+        if (historyYearEl.value !== digits) historyYearEl.value = digits;
+        if (digits.length === 4) renderHistory();
+      });
+      historyYearEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if ((historyYearEl.value || "").trim().length === 4) renderHistory();
+        }
       });
 
       $("#quickToAdd").addEventListener("click", () => setPage("add"));
@@ -1347,10 +1136,8 @@
         const month = m || monthISO(todayISO());
         const monthEntries = entries.filter((e) => monthISO(e.date) === month);
 
-        let income = 0;
-        let expense = 0;
-        const incomeList = [];
-        const expenseList = [];
+        let income = 0, expense = 0;
+        const incomeList = [], expenseList = [];
 
         for (const e of monthEntries) {
           if (e.type === "expense") { expense += e.amount || 0; expenseList.push(e); }
@@ -1423,6 +1210,7 @@
 
         const start = days[0], end = days[days.length - 1];
         let income = 0, expense = 0;
+
         for (const e of entries) {
           if (!e?.date) continue;
           if (e.date < start || e.date > end) continue;
@@ -1440,10 +1228,66 @@
 
       dailyDateEl.addEventListener("change", () => { renderDailySummary(); syncWeeklyDatesFromDaily(); });
       weeklyDateEl.addEventListener("change", () => { weeklyDatePrettyEl.textContent = prettyYmdKo(weeklyDateEl.value); renderWeeklySummary(); });
-
       dashMonthEl.addEventListener("input", () => { historyMonthEl.value = dashMonthEl.value; renderAll(); });
 
-      // 설정(내보내기/가져오기/삭제)
+      // ✅ CSV 내보내기: 다운로드 우선(PC) + 엑셀 친화(BOM + sep)
+      $("#exportCsv").addEventListener("click", async () => {
+        const header = ["date", "type", "category", "amount", "memo"];
+        const rows = entries.map((e) => [
+          e.date || "",
+          e.type || "",
+          e.category || "",
+          String(e.amount || 0),
+          (e.memo || "").replace(/\r?\n/g, " "),
+        ]);
+
+        const csvBody = [header, ...rows]
+          .map((cols) => cols.map(csvCell).join(","))
+          .join("\n");
+
+        const csvWithBom = "\ufeff" + "sep=,\n" + csvBody;
+        const filename = `ledger-${monthISO(todayISO())}-${Date.now()}.csv`;
+        const blob = new Blob([csvWithBom], { type: "text/csv;charset=utf-8" });
+
+        // 1) 다운로드 우선
+        try {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          a.rel = "noopener";
+          a.style.display = "none";
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 2000);
+          toast("CSV 다운로드 완료");
+          return;
+        } catch {}
+
+        // 2) 공유
+        try {
+          const file = new File([blob], filename, { type: "text/csv;charset=utf-8" });
+          if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+            await navigator.share({ files: [file], title: filename });
+            toast("CSV 공유로 내보냄");
+            return;
+          }
+        } catch {}
+
+        // 3) 클립보드
+        try {
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(csvWithBom);
+            toast("CSV가 클립보드에 복사됨");
+            return;
+          }
+        } catch {}
+
+        showBackupModal(csvWithBom);
+        toast("CSV 백업 텍스트 열림");
+      });
+
+      // JSON 내보내기
       $("#exportJson").addEventListener("click", async () => {
         const payload = JSON.stringify({ exportedAt: new Date().toISOString(), entries }, null, 2);
         const filename = `ledger-backup-${monthISO(todayISO())}-${Date.now()}.json`;
@@ -1451,19 +1295,61 @@
         toast(r.mode === "share" ? "JSON 공유로 내보냄" : r.mode === "clipboard" ? "JSON이 복사됨" : "JSON 백업 텍스트 열림");
       });
 
-      $("#exportCsv").addEventListener("click", async () => {
-        const header = ["date", "type", "category", "amount", "memo"];
-        const rows = entries.map((e) => [
-          e.date || "", e.type || "", e.category || "", String(e.amount || 0),
-          (e.memo || "").replace(/\r?\n/g, " "),
-        ]);
-        const csvBody = [header, ...rows].map((cols) => cols.map(csvCell).join(",")).join("\n");
-        const csvWithBom = "\ufeff" + csvBody; // 엑셀 한글 깨짐 방지
-        const filename = `ledger-${monthISO(todayISO())}-${Date.now()}.csv`;
-        const r = await smartExport(filename, csvWithBom, "text/csv;charset=utf-8");
-        toast(r.mode === "share" ? "CSV 공유로 내보냄" : r.mode === "clipboard" ? "CSV가 복사됨" : "CSV 백업 텍스트 열림");
-      });
+      // ✅ XLSX 내보내기
+      async function exportXlsxSmart() {
+        if (!window.XLSX) {
+          toast("xlsx 라이브러리를 못 찾았어. /xlsx.full.min.js 파일 확인해줘");
+          return;
+        }
 
+        const data = entries.map((e) => ({
+          날짜: e.date || "",
+          구분: e.type === "expense" ? "지출" : "수입",
+          카테고리: e.category || "",
+          금액: Number(e.amount || 0),
+          메모: e.memo || ""
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "가계부");
+
+        const arrayBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const blob = new Blob([arrayBuffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        });
+
+        const filename = `ledger-${monthISO(todayISO())}-${Date.now()}.xlsx`;
+
+        // Share 우선(모바일/TWA)
+        try {
+          const file = new File([blob], filename, { type: blob.type });
+          if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+            await navigator.share({ files: [file], title: filename });
+            toast("엑셀 파일 공유로 내보냄");
+            return;
+          }
+        } catch {}
+
+        // 다운로드(PC)
+        try {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          a.rel = "noopener";
+          a.style.display = "none";
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 2000);
+          toast("엑셀 파일 다운로드 완료");
+        } catch {
+          toast("엑셀 저장이 막혔어. JSON 내보내기로 우회해줘");
+        }
+      }
+      $("#exportXlsx").addEventListener("click", exportXlsxSmart);
+
+      // 가져오기/삭제
       const importFileEl = $("#importFile");
       $("#importBtn").addEventListener("click", async () => {
         const file = importFileEl.files && importFileEl.files[0];
@@ -1536,7 +1422,6 @@
         toast("전체 삭제 완료");
       });
 
-      // 유틸
       function escapeHtml(str) {
         return String(str)
           .replaceAll("&", "&amp;")
@@ -1554,7 +1439,71 @@
         return `"${escaped}"`;
       }
 
-      // 초기/렌더
+      // ✅ 연도 모달 (클릭 선택)
+      const yearModal = $("#yearModal");
+      const yearGrid = $("#yearGrid");
+      const yearPrev = $("#yearPrev");
+      const yearNext = $("#yearNext");
+      const yearClose = $("#yearClose");
+      const yearRangeLabel = $("#yearRangeLabel");
+
+      const YEAR_MIN = 1900;
+      const YEAR_MAX = 2100;
+      const YEAR_PAGE = 20;
+      let yearPageStart = Math.max(YEAR_MIN, (new Date().getFullYear() - 5));
+
+      function clampYearPageStart(v){
+        const maxStart = YEAR_MAX - (YEAR_PAGE - 1);
+        return Math.min(Math.max(v, YEAR_MIN), maxStart);
+      }
+
+      function renderYearGrid(){
+        const start = clampYearPageStart(yearPageStart);
+        const end = Math.min(YEAR_MAX, start + YEAR_PAGE - 1);
+        yearRangeLabel.textContent = `${start} ~ ${end}`;
+
+        const selected = Number((historyYearEl.value || "").trim());
+        yearGrid.innerHTML = "";
+
+        for (let y = start; y <= end; y++) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "btn";
+          btn.textContent = String(y);
+          if (Number.isFinite(selected) && selected === y) btn.classList.add("primary");
+
+          btn.addEventListener("click", () => {
+            historyYearEl.value = String(y);
+            yearModal.style.display = "none";
+            renderHistory();
+          });
+
+          yearGrid.appendChild(btn);
+        }
+      }
+
+      function openYearModal() {
+        const current = Number((historyYearEl.value || "").trim());
+        if (Number.isFinite(current) && current >= YEAR_MIN && current <= YEAR_MAX) {
+          yearPageStart = clampYearPageStart(current - Math.floor(YEAR_PAGE/2));
+        } else {
+          yearPageStart = clampYearPageStart(new Date().getFullYear() - 5);
+        }
+        renderYearGrid();
+        yearModal.style.display = "flex";
+      }
+
+      function closeYearModal() {
+        yearModal.style.display = "none";
+      }
+
+      historyYearEl.addEventListener("click", openYearModal);
+      yearPrev.addEventListener("click", () => { yearPageStart = clampYearPageStart(yearPageStart - YEAR_PAGE); renderYearGrid(); });
+      yearNext.addEventListener("click", () => { yearPageStart = clampYearPageStart(yearPageStart + YEAR_PAGE); renderYearGrid(); });
+      yearClose.addEventListener("click", closeYearModal);
+      yearModal.addEventListener("click", (e) => { if (e.target === yearModal) closeYearModal(); });
+
+      // 초기
       function init() {
         wireBackupModal();
 
@@ -1573,7 +1522,6 @@
         refreshCategoryOptions();
 
         initDailyDateOptions();
-
         setHistoryPeriod("month");
         setHistoryType("expense");
 
