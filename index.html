@@ -4,24 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b1020" />
-  <title>오프라인 가계부 앱</title>
+  <title>오프라인 가계부</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
   <style>
     :root{
-      --bg:#0b1020;
-      --panel:#121a33;
-      --panel2:#0f1630;
-      --text:#e9ecf5;
-      --muted:#aab2d5;
-      --line:rgba(255,255,255,.10);
-      --good:#2dd4bf;
-      --bad:#fb7185;
-      --warn:#fbbf24;
-      --chip:#1b2750;
-      --btn:#1a2650;
-      --btn2:#24346b;
+      --bg:#0b1020; --text:#e9ecf5; --muted:#aab2d5; --line:rgba(255,255,255,.10);
+      --good:#2dd4bf; --bad:#fb7185; --warn:#fbbf24;
       --shadow: 0 10px 30px rgba(0,0,0,.35);
     }
-
     *{ box-sizing:border-box; }
     body{
       margin:0;
@@ -30,38 +24,21 @@
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Apple SD Gothic Neo, "Noto Sans KR", Arial, sans-serif;
       line-height:1.4;
     }
-
-    a{ color:inherit; }
-
     .appHeader{
-      position:sticky;
-      top:0;
-      z-index:10;
+      position:sticky; top:0; z-index:10;
       backdrop-filter: blur(10px);
       background: rgba(10, 14, 30, .72);
       border-bottom:1px solid var(--line);
     }
-
     .headerInner{
-      max-width:1100px;
-      margin:0 auto;
-      padding:12px 14px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      max-width:1100px; margin:0 auto; padding:12px 14px;
+      display:flex; align-items:center; justify-content:center;
     }
-
     .navTabs{
-      display:flex;
-      gap:8px;
-      flex-wrap:nowrap;
-      justify-content:center;
-      overflow-x:auto;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom:2px;
+      display:flex; gap:8px; flex-wrap:nowrap; justify-content:center;
+      overflow-x:auto; -webkit-overflow-scrolling: touch; padding-bottom:2px;
     }
     .navTabs::-webkit-scrollbar{ height:0; }
-
     .navBtn{
       border:1px solid var(--line);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
@@ -81,20 +58,11 @@
       border-color: rgba(45,212,191,.35);
     }
 
-    main{
-      max-width:1100px;
-      margin:0 auto;
-      padding:18px 14px 40px;
-    }
-
+    main{ max-width:1100px; margin:0 auto; padding:18px 14px 40px; }
     .page{ display:none; }
     .page.active{ display:block; }
 
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap:12px;
-    }
+    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:12px; }
     .card{
       grid-column: span 12;
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
@@ -104,57 +72,30 @@
       padding:14px;
     }
     .cardTitle{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:10px;
-      flex-wrap:wrap;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; margin-bottom:10px; flex-wrap:wrap;
     }
-    .cardTitle h2{
-      margin:0;
-      font-size:14px;
-      letter-spacing:.2px;
-    }
+    .cardTitle h2{ margin:0; font-size:14px; letter-spacing:.2px; }
     .muted{ color:var(--muted); }
 
-    .statGrid{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap:12px;
-    }
-    .stat{
-      grid-column: span 12;
-      padding:14px;
-    }
+    .statGrid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:12px; }
+    .stat{ grid-column: span 12; padding:14px; }
     @media (min-width: 720px){
       .stat{ grid-column: span 4; }
       .card.half{ grid-column: span 6; }
     }
-    .statLabel{
-      color:var(--muted);
-      font-size:12px;
-      margin-bottom:6px;
-    }
-    .statValue{
-      font-size:22px;
-      font-weight:900;
-      letter-spacing:.2px;
-    }
+    .statLabel{ color:var(--muted); font-size:12px; margin-bottom:6px; }
+    .statValue{ font-size:22px; font-weight:900; letter-spacing:.2px; }
     .good{ color:var(--good); }
     .bad{ color:var(--bad); }
     .warn{ color:var(--warn); }
 
-    .row{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
+    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
     .spacer{ flex:1; }
 
-    .input, select, textarea,
-    input[type="date"], input[type="week"], input[type="month"], input[type="number"], input[type="text"]{
+    select, textarea,
+    input[type="date"], input[type="week"], input[type="month"],
+    input[type="number"], input[type="text"]{
       width:100%;
       padding:12px 12px;
       border-radius:12px;
@@ -164,72 +105,34 @@
       outline:none;
     }
     select{ cursor:pointer; }
-    label{
-      display:block;
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
+    label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
 
-    .form{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap:12px;
-    }
+    .form{ display:grid; grid-template-columns: repeat(12, 1fr); gap:12px; }
     .field{ grid-column: span 12; }
     @media (min-width: 720px){
       .field.half{ grid-column: span 6; }
       .field.third{ grid-column: span 4; }
     }
-    .help{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:6px;
-    }
+    .help{ font-size:12px; color:var(--muted); margin-top:6px; }
 
     .seg{
-      display:flex;
-      width:100%;
+      display:flex; width:100%;
       border:1px solid var(--line);
       border-radius:12px;
       overflow:hidden;
       background: rgba(0,0,0,.18);
     }
-    .segBtn{
-      flex:1;
-      padding:10px 10px;
-      border:0;
-      background: transparent;
-      color:var(--text);
-      cursor:pointer;
-      font-weight:800;
-      letter-spacing:.2px;
+    .segBtn, .segBtnAlt{
+      flex:1; padding:10px 10px; border:0; background: transparent;
+      color:var(--text); cursor:pointer; font-weight:800; letter-spacing:.2px;
     }
-    .segBtn.active{
-      background: linear-gradient(180deg, rgba(36,52,107,.65), rgba(26,38,80,.35));
-    }
-
-    .segBtnAlt{
-      flex:1;
-      padding:10px 10px;
-      border:0;
-      background: transparent;
-      color:var(--text);
-      cursor:pointer;
-      font-weight:800;
-      letter-spacing:.2px;
-    }
-    .segBtnAlt.active{
+    .segBtn.active, .segBtnAlt.active{
       background: linear-gradient(180deg, rgba(36,52,107,.65), rgba(26,38,80,.35));
     }
 
     .actions{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:flex-end;
-      flex-wrap:wrap;
-      margin-top:4px;
+      display:flex; gap:10px; align-items:center; justify-content:flex-end;
+      flex-wrap:wrap; margin-top:4px;
     }
     .btn{
       border:1px solid var(--line);
@@ -251,80 +154,36 @@
       background: linear-gradient(180deg, rgba(251,113,133,.22), rgba(251,113,133,.08));
     }
 
-    .list{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
+    .list{ display:flex; flex-direction:column; gap:10px; }
     .item{
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-      justify-content:space-between;
-      padding:12px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background: rgba(0,0,0,.18);
+      display:flex; gap:12px; align-items:flex-start; justify-content:space-between;
+      padding:12px; border:1px solid var(--line); border-radius:14px; background: rgba(0,0,0,.18);
     }
-    .itemLeft{
-      min-width:0;
-      flex:1;
-    }
-    .itemMeta{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      flex-wrap:wrap;
-      margin-bottom:4px;
-    }
+    .itemLeft{ min-width:0; flex:1; }
+    .itemMeta{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:4px; }
     .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:6px 10px;
-      border-radius:999px;
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 10px; border-radius:999px;
       background: rgba(27,39,80,.65);
       border:1px solid var(--line);
-      font-size:12px;
-      color:var(--text);
-      font-weight:800;
+      font-size:12px; color:var(--text); font-weight:800;
     }
     .chip.good{ color: var(--good); }
     .chip.bad{ color: var(--bad); }
     .itemTitle{
-      font-weight:900;
-      letter-spacing:.2px;
-      margin-bottom:4px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
+      font-weight:900; letter-spacing:.2px; margin-bottom:4px;
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
     }
     .itemMemo{
-      color:var(--muted);
-      font-size:12px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
+      color:var(--muted); font-size:12px;
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
     }
     .itemRight{
-      text-align:right;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      align-items:flex-end;
-      min-width: 120px;
+      text-align:right; display:flex; flex-direction:column; gap:8px;
+      align-items:flex-end; min-width: 120px;
     }
-    .amount{
-      font-size:16px;
-      font-weight:950;
-      letter-spacing:.2px;
-    }
-    .miniActions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
+    .amount{ font-size:16px; font-weight:950; letter-spacing:.2px; }
+    .miniActions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
     .miniBtn{
       border:1px solid var(--line);
       background: rgba(0,0,0,.18);
@@ -335,71 +194,39 @@
       font-weight:800;
       font-size:12px;
     }
-    .miniBtn.danger{
-      border-color: rgba(251,113,133,.35);
-    }
+    .miniBtn.danger{ border-color: rgba(251,113,133,.35); }
 
     .empty{
-      text-align:center;
-      color:var(--muted);
-      padding:26px 10px;
-      border:1px dashed var(--line);
-      border-radius:16px;
-      background: rgba(0,0,0,.10);
+      text-align:center; color:var(--muted); padding:26px 10px;
+      border:1px dashed var(--line); border-radius:16px; background: rgba(0,0,0,.10);
     }
 
     .barList{ display:flex; flex-direction:column; gap:10px; }
     .barRow{ display:grid; grid-template-columns: 1fr 90px; gap:10px; align-items:center; }
     .barLabel{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:6px;
+      display:flex; justify-content:space-between; gap:10px;
+      font-size:12px; color:var(--muted); margin-bottom:6px;
     }
     .barTrack{
-      height:10px;
-      border-radius:999px;
-      background: rgba(255,255,255,.08);
-      overflow:hidden;
-      border:1px solid var(--line);
+      height:10px; border-radius:999px; background: rgba(255,255,255,.08);
+      overflow:hidden; border:1px solid var(--line);
     }
     .barFill{
-      height:100%;
-      width:0%;
-      border-radius:999px;
+      height:100%; width:0%; border-radius:999px;
       background: linear-gradient(90deg, rgba(251,113,133,.75), rgba(45,212,191,.75));
     }
-    .barAmt{
-      text-align:right;
-      font-weight:900;
-      font-size:12px;
-      color:var(--text);
-      white-space:nowrap;
-    }
+    .barAmt{ text-align:right; font-weight:900; font-size:12px; color:var(--text); white-space:nowrap; }
 
     .toast{
-      position:fixed;
-      left:50%;
-      bottom:18px;
-      transform: translateX(-50%);
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background: rgba(10, 14, 30, .88);
-      box-shadow: var(--shadow);
-      color:var(--text);
-      font-weight:800;
-      font-size:12px;
-      opacity:0;
-      pointer-events:none;
+      position:fixed; left:50%; bottom:18px; transform: translateX(-50%);
+      padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background: rgba(10, 14, 30, .88); box-shadow: var(--shadow);
+      color:var(--text); font-weight:800; font-size:12px;
+      opacity:0; pointer-events:none;
       transition: .18s opacity ease, .18s transform ease;
+      z-index:9998;
     }
-    .toast.show{
-      opacity:1;
-      transform: translateX(-50%) translateY(-2px);
-    }
+    .toast.show{ opacity:1; transform: translateX(-50%) translateY(-2px); }
   </style>
 </head>
 
@@ -419,7 +246,6 @@
     <!-- 요약 -->
     <section id="dashboard" class="page active">
       <div class="grid">
-        <!-- 월 요약 -->
         <div class="card">
           <div class="cardTitle">
             <h2>이번 달 요약</h2>
@@ -428,7 +254,6 @@
               <input id="dashMonth" type="month" style="width:auto; min-width:160px;" />
             </div>
           </div>
-
           <div class="statGrid">
             <div class="card stat" style="background: rgba(0,0,0,.14); box-shadow:none;">
               <div class="statLabel">수입</div>
@@ -445,7 +270,6 @@
           </div>
         </div>
 
-        <!-- 일별 요약 -->
         <div class="card">
           <div class="cardTitle">
             <h2>일별 요약</h2>
@@ -455,7 +279,6 @@
               <span id="dailyDatePretty" class="muted" style="font-size:12px;"></span>
             </div>
           </div>
-
           <div class="statGrid">
             <div class="card stat" style="background: rgba(0,0,0,.14); box-shadow:none;">
               <div class="statLabel">수입</div>
@@ -472,7 +295,6 @@
           </div>
         </div>
 
-        <!-- 주별 요약 -->
         <div class="card">
           <div class="cardTitle">
             <h2>주별 요약</h2>
@@ -482,7 +304,6 @@
               <span id="weeklyDatePretty" class="muted" style="font-size:12px;"></span>
             </div>
           </div>
-
           <div class="statGrid">
             <div class="card stat" style="background: rgba(0,0,0,.14); box-shadow:none;">
               <div class="statLabel">수입</div>
@@ -499,7 +320,6 @@
           </div>
         </div>
 
-        <!-- 금액 + % -->
         <div class="card half">
           <div class="cardTitle">
             <h2>지출 상위 카테고리</h2>
@@ -524,7 +344,7 @@
         <div class="card">
           <div class="cardTitle">
             <h2>내역 추가 / 수정</h2>
-            <div class="muted" style="font-size:12px;">저장은 이 기기 브라우저에만 남아</div>
+            <div class="muted" style="font-size:12px;">저장은 이 기기(브라우저)에만 남아</div>
           </div>
 
           <form id="entryForm" class="form" autocomplete="off">
@@ -542,7 +362,7 @@
                 <button class="segBtn active" type="button" data-type="expense">지출</button>
                 <button class="segBtn" type="button" data-type="income">수입</button>
               </div>
-              <div class="help">지출은 빨강, 수입은 초록으로 표시돼</div>
+              <div class="help">지출은 빨강, 수입은 초록으로 표시</div>
             </div>
 
             <div class="field half">
@@ -577,9 +397,7 @@
     <section id="history" class="page">
       <div class="grid">
         <div class="card">
-          <div class="cardTitle">
-            <h2>내역</h2>
-          </div>
+          <div class="cardTitle"><h2>내역</h2></div>
 
           <div id="historyFilters" class="card" style="background: rgba(0,0,0,.14); box-shadow:none; margin-bottom:12px;">
             <div class="form" style="gap:10px;">
@@ -649,7 +467,7 @@
         <div class="card">
           <div class="cardTitle">
             <h2>백업 / 복원</h2>
-            <div class="muted" style="font-size:12px;">JSON/CSV로 내보내고 가져오기</div>
+            <div class="muted" style="font-size:12px;">JSON/CSV 내보내기 + JSON 가져오기</div>
           </div>
 
           <div class="row" style="gap:10px; margin-bottom:12px;">
@@ -659,7 +477,7 @@
 
           <div class="card" style="background: rgba(0,0,0,.14); box-shadow:none;">
             <div class="muted" style="font-size:12px; margin-bottom:10px;">
-              JSON 가져오기: 내보낸 파일을 선택하면 합치기/덮어쓰기 중 선택할 수 있어.
+              JSON 파일 가져오기: 파일 선택 후 합치기/덮어쓰기 선택
             </div>
             <div class="row" style="gap:10px;">
               <input id="importFile" type="file" accept=".json,application/json" />
@@ -667,10 +485,9 @@
             </div>
           </div>
 
-          <!-- ✅ 추가: 붙여넣기 복원 -->
           <div class="card" style="background: rgba(0,0,0,.14); box-shadow:none; margin-top:12px;">
             <div class="muted" style="font-size:12px; margin-bottom:10px;">
-              JSON 텍스트 붙여넣기 가져오기: 백업 텍스트를 그대로 붙여넣고 복원할 수 있어.
+              JSON 텍스트 붙여넣기 복원: 백업 텍스트를 붙여넣고 복원
             </div>
             <textarea id="importText" placeholder="여기에 JSON 텍스트 붙여넣기" style="height:160px;"></textarea>
             <div class="actions" style="margin-top:10px;">
@@ -682,7 +499,7 @@
             <div class="row">
               <div>
                 <div style="font-weight:900;">전체 삭제</div>
-                <div class="muted" style="font-size:12px;">이 기기의 저장된 내역이 모두 삭제돼</div>
+                <div class="muted" style="font-size:12px;">이 기기에 저장된 내역이 모두 삭제됨</div>
               </div>
               <div class="spacer"></div>
               <button class="btn danger" type="button" id="clearAll">전체 삭제</button>
@@ -691,7 +508,7 @@
 
           <div class="help" style="margin-top:12px;">
             참고: 이 앱은 <b>localStorage</b>에 저장돼. 같은 브라우저/기기에서만 유지되고,
-            시크릿 모드나 브라우저 데이터 삭제 시 사라질 수 있어.
+            브라우저 데이터 삭제 시 사라질 수 있어.
           </div>
         </div>
       </div>
@@ -700,7 +517,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- ✅ 백업 모달(공유/다운로드가 막히는 환경 대비) -->
+  <!-- 백업 모달 -->
   <div id="backupModal" style="
     position:fixed; inset:0; background:rgba(0,0,0,.55);
     display:none; align-items:center; justify-content:center; padding:14px; z-index:9999;">
@@ -714,7 +531,7 @@
         </div>
       </div>
       <div class="muted" style="font-size:12px; margin:8px 0 10px;">
-        공유/다운로드가 막힌 환경이면 아래 내용을 복사해서 메모앱에 저장해.
+        공유/다운로드가 막힌 환경이면 아래 내용을 복사해서 메모앱 등에 저장해.
       </div>
       <textarea id="backupText" style="width:100%; height:52vh;
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;"></textarea>
@@ -725,12 +542,17 @@
     (() => {
       "use strict";
 
+      // 오프라인(Service Worker)
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js").catch(() => {});
+        });
+      }
+
       const $ = (sel, root = document) => root.querySelector(sel);
       const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
       const STORAGE_KEY = "ledger_entries_v1";
-
-      // (옵션) 주(week)에서 전월/익월 데이터 섞이는 것 방지
       const CLAMP_WEEK_TO_MONTH = true;
 
       const CATEGORIES = {
@@ -739,7 +561,6 @@
       };
 
       const DOW_KO = ["일", "월", "화", "수", "목", "금", "토"];
-
       const moneyFmt = new Intl.NumberFormat("ko-KR");
       const money = (n) => `${moneyFmt.format(Math.round(n || 0))}원`;
 
@@ -751,8 +572,7 @@
         return `${yyyy}-${mm}-${dd}`;
       };
 
-      const monthISO = (dateStr) => (dateStr || "").slice(0, 7); // YYYY-MM
-
+      const monthISO = (dateStr) => (dateStr || "").slice(0, 7);
       const uid = () => (Date.now().toString(36) + Math.random().toString(36).slice(2, 9));
 
       function ymdFromDate(d) {
@@ -762,7 +582,6 @@
         return `${yyyy}-${mm}-${dd}`;
       }
 
-      // ====== 일/주 요약용 유틸 ======
       function parseYMD(ymd) {
         const [y, m, d] = (ymd || "").split("-").map((x) => Number(x));
         if (!y || !m || !d) return null;
@@ -784,7 +603,7 @@
         if (!dt) return [];
 
         const monday = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
-        const day = monday.getDay(); // 0=일..6=토
+        const day = monday.getDay();
         const diffToMon = (day === 0) ? -6 : (1 - day);
         monday.setDate(monday.getDate() + diffToMon);
 
@@ -827,7 +646,6 @@
         toast._t = window.setTimeout(() => el.classList.remove("show"), 1600);
       }
 
-      // ---------- 백업 모달 ----------
       function showBackupModal(text) {
         const wrap = document.getElementById("backupModal");
         const ta = document.getElementById("backupText");
@@ -840,26 +658,40 @@
         document.getElementById("backupCloseBtn").onclick = () => (wrap.style.display = "none");
         document.getElementById("backupCopyBtn").onclick = async () => {
           const t = document.getElementById("backupText").value;
-          try {
-            await navigator.clipboard.writeText(t);
-            toast("복사 완료");
-          } catch {
-            toast("복사 실패: 길게 눌러 전체 선택 후 복사해줘");
-          }
+          try { await navigator.clipboard.writeText(t); toast("복사 완료"); }
+          catch { toast("복사 실패: 길게 눌러 전체 선택 후 복사"); }
         };
       }
 
-      // ---------- 페이지 전환 ----------
+      async function smartExport(filename, content, mime) {
+        const blob = new Blob([content], { type: mime });
+        const file = new File([blob], filename, { type: mime });
+
+        try {
+          if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+            await navigator.share({ files: [file], title: filename });
+            return { ok: true, mode: "share" };
+          }
+        } catch {}
+
+        try {
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(content);
+            return { ok: true, mode: "clipboard" };
+          }
+        } catch {}
+
+        showBackupModal(content);
+        return { ok: true, mode: "modal" };
+      }
+
       function setPage(pageId) {
         $$(".navBtn").forEach((b) => b.classList.toggle("active", b.dataset.page === pageId));
         $$(".page").forEach((p) => p.classList.toggle("active", p.id === pageId));
       }
+      $$(".navBtn").forEach((btn) => btn.addEventListener("click", () => setPage(btn.dataset.page)));
 
-      $$(".navBtn").forEach((btn) => {
-        btn.addEventListener("click", () => setPage(btn.dataset.page));
-      });
-
-      // ---------- 폼(추가/수정) ----------
+      // 폼(추가/수정)
       const entryForm = $("#entryForm");
       const editingIdEl = $("#editingId");
       const typeEl = $("#type");
@@ -876,21 +708,15 @@
         $$(`.segBtn[data-type]`).forEach((b) => b.classList.toggle("active", b.dataset.type === type));
         refreshCategoryOptions();
       }
-
-      $$(`.segBtn[data-type]`).forEach((b) => {
-        b.addEventListener("click", () => setType(b.dataset.type));
-      });
+      $$(`.segBtn[data-type]`).forEach((b) => b.addEventListener("click", () => setType(b.dataset.type)));
 
       function refreshCategoryOptions() {
         const type = typeEl.value;
         const options = CATEGORIES[type] || ["기타", "직접입력"];
-
         const current = categoryEl.value;
+
         categoryEl.innerHTML = options.map((c) => `<option value="${escapeHtmlAttr(c)}">${escapeHtml(c)}</option>`).join("");
-
-        const has = options.includes(current);
-        categoryEl.value = has ? current : options[0];
-
+        categoryEl.value = options.includes(current) ? current : options[0];
         handleCategoryCustom();
       }
 
@@ -899,7 +725,6 @@
         categoryCustomEl.style.display = isCustom ? "block" : "none";
         if (!isCustom) categoryCustomEl.value = "";
       }
-
       categoryEl.addEventListener("change", handleCategoryCustom);
 
       function startEdit(entry) {
@@ -922,9 +747,8 @@
 
         submitBtn.textContent = "수정 저장";
         cancelEditBtn.style.display = "inline-block";
-
         setPage("add");
-        toast("수정 모드로 전환");
+        toast("수정 모드");
       }
 
       function endEditMode() {
@@ -956,19 +780,15 @@
 
         if (!date) return toast("날짜를 입력해줘");
         if (!category) return toast("카테고리를 입력해줘");
-        if (!Number.isFinite(amount) || amount < 1) return toast("금액은 1원 이상 입력해줘");
+        if (!Number.isFinite(amount) || amount < 1) return toast("금액은 1원 이상");
 
         const editingId = editingIdEl.value;
 
         if (editingId) {
           const idx = entries.findIndex((x) => x.id === editingId);
-          if (idx >= 0) {
-            entries[idx] = { ...entries[idx], type, date, category, amount, memo };
-            toast("수정 완료");
-          } else {
-            toast("수정 대상이 없어 새로 저장할게");
-            entries.unshift({ id: uid(), type, date, category, amount, memo, createdAt: Date.now() });
-          }
+          if (idx >= 0) entries[idx] = { ...entries[idx], type, date, category, amount, memo };
+          else entries.unshift({ id: uid(), type, date, category, amount, memo, createdAt: Date.now() });
+          toast("수정 완료");
           endEditMode();
         } else {
           entries.unshift({ id: uid(), type, date, category, amount, memo, createdAt: Date.now() });
@@ -987,7 +807,7 @@
         setPage("history");
       });
 
-      // ---------- 내역(필터/리스트) ----------
+      // 내역
       const historyPeriodEl = $("#historyPeriod");
       const historyDayEl = $("#historyDay");
       const historyWeekEl = $("#historyWeek");
@@ -1008,36 +828,23 @@
 
       function setHistoryPeriod(period) {
         historyPeriodEl.value = period;
-
-        $$("#historyFilters button[data-period]").forEach((b) => {
-          b.classList.toggle("active", b.dataset.period === period);
-        });
-
+        $$("#historyFilters button[data-period]").forEach((b) => b.classList.toggle("active", b.dataset.period === period));
         wrapHistoryDay.style.display = (period === "day") ? "block" : "none";
         wrapHistoryWeek.style.display = (period === "week") ? "block" : "none";
         wrapHistoryMonth.style.display = (period === "month") ? "block" : "none";
         wrapHistoryYear.style.display = (period === "year") ? "block" : "none";
-
         renderHistory();
       }
 
       function setHistoryType(type) {
         historyTypeEl.value = type;
-        $$("#historyFilters button[data-histtype]").forEach((b) => {
-          b.classList.toggle("active", b.dataset.histtype === type);
-        });
+        $$("#historyFilters button[data-histtype]").forEach((b) => b.classList.toggle("active", b.dataset.histtype === type));
         renderHistory();
       }
 
-      $$("#historyFilters button[data-period]").forEach((btn) => {
-        btn.addEventListener("click", () => setHistoryPeriod(btn.dataset.period));
-      });
+      $$("#historyFilters button[data-period]").forEach((btn) => btn.addEventListener("click", () => setHistoryPeriod(btn.dataset.period)));
+      $$("#historyFilters button[data-histtype]").forEach((btn) => btn.addEventListener("click", () => setHistoryType(btn.dataset.histtype)));
 
-      $$("#historyFilters button[data-histtype]").forEach((btn) => {
-        btn.addEventListener("click", () => setHistoryType(btn.dataset.histtype));
-      });
-
-      // ISO Week 계산(week input용)
       function isoWeekInfo(date) {
         const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
         const dayNum = d.getUTCDay() || 7;
@@ -1047,12 +854,10 @@
         const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
         return { isoYear, weekNo };
       }
-
       function toISOWeekString(date) {
         const { isoYear, weekNo } = isoWeekInfo(date);
         return `${isoYear}-W${String(weekNo).padStart(2, "0")}`;
       }
-
       function isoWeekStartEnd(weekStr) {
         if (!weekStr || !/^(\d{4})-W(\d{2})$/.test(weekStr)) return null;
         const [y, w] = weekStr.split("-W");
@@ -1062,17 +867,14 @@
         const simple = new Date(Date.UTC(isoYear, 0, 1 + (isoWeek - 1) * 7));
         const dow = simple.getUTCDay();
         const monday = new Date(simple);
-        if (dow <= 4) {
-          monday.setUTCDate(simple.getUTCDate() - (dow === 0 ? 6 : (dow - 1)));
-        } else {
-          monday.setUTCDate(simple.getUTCDate() + (8 - dow));
-        }
+        if (dow <= 4) monday.setUTCDate(simple.getUTCDate() - (dow === 0 ? 6 : (dow - 1)));
+        else monday.setUTCDate(simple.getUTCDate() + (8 - dow));
 
         const sunday = new Date(monday);
         sunday.setUTCDate(monday.getUTCDate() + 6);
 
-        const start = `${monday.getUTCFullYear()}-${String(monday.getUTCMonth() + 1).padStart(2,"0")}-${String(monday.getUTCDate()).padStart(2,"0")}`;
-        const end = `${sunday.getUTCFullYear()}-${String(sunday.getUTCMonth() + 1).padStart(2,"0")}-${String(sunday.getUTCDate()).padStart(2,"0")}`;
+        const start = `${monday.getUTCFullYear()}-${String(monday.getUTCMonth()+1).padStart(2,"0")}-${String(monday.getUTCDate()).padStart(2,"0")}`;
+        const end = `${sunday.getUTCFullYear()}-${String(sunday.getUTCMonth()+1).padStart(2,"0")}-${String(sunday.getUTCDate()).padStart(2,"0")}`;
         return { start, end };
       }
 
@@ -1096,7 +898,6 @@
           } else if (period === "week") {
             if (!weekRange) return false;
             if (e.date < weekRange.start || e.date > weekRange.end) return false;
-
             if (CLAMP_WEEK_TO_MONTH) {
               const baseYM = weekRange.start.slice(0, 7);
               if (monthISO(e.date) !== baseYM) return false;
@@ -1115,36 +916,8 @@
             const hay = `${e.category || ""} ${e.memo || ""}`.toLowerCase();
             if (!hay.includes(q)) return false;
           }
-
           return true;
         });
-      }
-
-      function renderHistory() {
-        const list = getFilteredEntriesHistory();
-
-        let sumExpense = 0;
-        let sumIncome = 0;
-        list.forEach((e) => {
-          if (e.type === "expense") sumExpense += e.amount;
-          else sumIncome += e.amount;
-        });
-
-        historyCountEl.textContent = `${list.length}건`;
-        historySumExpenseEl.textContent = `지출 ${money(sumExpense)}`;
-        historySumIncomeEl.textContent = `수입 ${money(sumIncome)}`;
-
-        if (list.length === 0) {
-          historyListEl.innerHTML = `
-            <div class="empty">
-              조건에 맞는 내역이 없어.<br/>
-              기간/구분/검색을 바꿔줘.
-            </div>
-          `;
-          return;
-        }
-
-        historyListEl.innerHTML = list.map(renderEntryItem).join("");
       }
 
       function renderEntryItem(e) {
@@ -1165,7 +938,6 @@
               <div class="itemTitle">${escapeHtml(e.category || "")}</div>
               <div class="itemMemo">${memo ? escapeHtml(memo) : "<span class='muted'>메모 없음</span>"}</div>
             </div>
-
             <div class="itemRight">
               <div class="amount ${amtClass}">${sign}${moneyFmt.format(Math.round(e.amount || 0))}원</div>
               <div class="miniActions">
@@ -1177,16 +949,30 @@
         `;
       }
 
+      function renderHistory() {
+        const list = getFilteredEntriesHistory();
+        let sumExpense = 0, sumIncome = 0;
+        list.forEach((e) => { if (e.type === "expense") sumExpense += e.amount; else sumIncome += e.amount; });
+
+        historyCountEl.textContent = `${list.length}건`;
+        historySumExpenseEl.textContent = `지출 ${money(sumExpense)}`;
+        historySumIncomeEl.textContent = `수입 ${money(sumIncome)}`;
+
+        if (list.length === 0) {
+          historyListEl.innerHTML = `<div class="empty">조건에 맞는 내역이 없어.<br/>기간/구분/검색을 바꿔줘.</div>`;
+          return;
+        }
+        historyListEl.innerHTML = list.map(renderEntryItem).join("");
+      }
+
       historyListEl.addEventListener("click", (e) => {
         const btn = e.target.closest("button[data-action]");
         if (!btn) return;
-
         const item = e.target.closest(".item");
         if (!item) return;
 
         const id = item.getAttribute("data-id");
         const action = btn.getAttribute("data-action");
-
         const entry = entries.find((x) => x.id === id);
         if (!entry) return toast("대상을 찾을 수 없어");
 
@@ -1198,10 +984,7 @@
           toast("삭제 완료");
           return;
         }
-
-        if (action === "edit") {
-          startEdit(entry);
-        }
+        if (action === "edit") startEdit(entry);
       });
 
       [historyDayEl, historyWeekEl, historyMonthEl, historyYearEl, historyQueryEl].forEach((el) => {
@@ -1210,7 +993,7 @@
 
       $("#quickToAdd").addEventListener("click", () => setPage("add"));
 
-      // ---------- 대시보드 ----------
+      // 대시보드
       const dashMonthEl = $("#dashMonth");
       const dashIncomeEl = $("#dashIncome");
       const dashExpenseEl = $("#dashExpense");
@@ -1241,12 +1024,10 @@
 
       function renderBars(container, map, totalAmount, emptyText) {
         const entriesArr = Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 8);
-
         if (!totalAmount || totalAmount <= 0 || entriesArr.length === 0) {
           container.innerHTML = `<div class="empty">${escapeHtml(emptyText)}</div>`;
           return;
         }
-
         container.innerHTML = entriesArr.map(([name, val]) => {
           const pct = Math.max(0, Math.min(100, (val / totalAmount) * 100));
           return `
@@ -1269,26 +1050,17 @@
       function renderDashboard() {
         const m = dashMonthEl.value;
         const month = m || monthISO(todayISO());
-
         const monthEntries = entries.filter((e) => monthISO(e.date) === month);
 
-        let income = 0;
-        let expense = 0;
-        const incomeList = [];
-        const expenseList = [];
+        let income = 0, expense = 0;
+        const incomeList = [], expenseList = [];
 
         for (const e of monthEntries) {
-          if (e.type === "expense") {
-            expense += e.amount || 0;
-            expenseList.push(e);
-          } else {
-            income += e.amount || 0;
-            incomeList.push(e);
-          }
+          if (e.type === "expense") { expense += e.amount || 0; expenseList.push(e); }
+          else { income += e.amount || 0; incomeList.push(e); }
         }
 
         const balance = income - expense;
-
         dashIncomeEl.textContent = money(income);
         dashExpenseEl.textContent = money(expense);
         dashBalanceEl.textContent = money(balance);
@@ -1302,24 +1074,18 @@
       function initDailyDateOptions() {
         const base = dailyDateEl.value || todayISO();
         dailyDateEl.value = base;
-        if (dailyDatePrettyEl) dailyDatePrettyEl.textContent = prettyYmdKo(base);
+        dailyDatePrettyEl.textContent = prettyYmdKo(base);
         syncWeeklyDatesFromDaily();
       }
 
       function renderDailySummary() {
         const selected = dailyDateEl.value || todayISO();
         if (dailyDateEl.value !== selected) dailyDateEl.value = selected;
-
-        if (dailyDatePrettyEl) dailyDatePrettyEl.textContent = prettyYmdKo(selected);
+        dailyDatePrettyEl.textContent = prettyYmdKo(selected);
 
         const dayEntries = entries.filter((e) => e.date === selected);
-
-        let income = 0;
-        let expense = 0;
-        for (const e of dayEntries) {
-          if (e.type === "expense") expense += e.amount || 0;
-          else income += e.amount || 0;
-        }
+        let income = 0, expense = 0;
+        for (const e of dayEntries) { if (e.type === "expense") expense += e.amount || 0; else income += e.amount || 0; }
         const balance = income - expense;
 
         dayIncomeEl.textContent = money(income);
@@ -1330,8 +1096,6 @@
       }
 
       function syncWeeklyDatesFromDaily() {
-        if (!weeklyDateEl) return;
-
         const base = dailyDateEl.value || todayISO();
         const days = weekDatesFromYMD(base);
 
@@ -1344,15 +1108,12 @@
         }
 
         weeklyDateEl.value = days.includes(base) ? base : (days[0] || "");
-        if (weeklyDatePrettyEl) weeklyDatePrettyEl.textContent = prettyYmdKo(weeklyDateEl.value);
-
+        weeklyDatePrettyEl.textContent = prettyYmdKo(weeklyDateEl.value);
         renderWeeklySummary();
       }
 
       function renderWeeklySummary() {
-        if (!weeklyDateEl || !weekIncomeEl || !weekExpenseEl || !weekBalanceEl) return;
-
-        const selected = weeklyDateEl.value || (dailyDateEl ? dailyDateEl.value : "");
+        const selected = weeklyDateEl.value || dailyDateEl.value || "";
         const days = weekDatesFromYMD(selected);
 
         if (days.length === 0) {
@@ -1363,22 +1124,17 @@
           return;
         }
 
-        const start = days[0];
-        const end = days[days.length - 1];
-
-        let income = 0;
-        let expense = 0;
+        const start = days[0], end = days[days.length - 1];
+        let income = 0, expense = 0;
 
         for (const e of entries) {
-          if (!e || !e.date) continue;
+          if (!e?.date) continue;
           if (e.date < start || e.date > end) continue;
-
           if (e.type === "expense") expense += e.amount || 0;
           else income += e.amount || 0;
         }
 
         const balance = income - expense;
-
         weekIncomeEl.textContent = money(income);
         weekExpenseEl.textContent = money(expense);
         weekBalanceEl.textContent = money(balance);
@@ -1386,49 +1142,12 @@
         weekBalanceEl.classList.toggle("bad", balance < 0);
       }
 
-      dailyDateEl.addEventListener("change", () => {
-        renderDailySummary();
-        syncWeeklyDatesFromDaily();
-      });
+      dailyDateEl.addEventListener("change", () => { renderDailySummary(); syncWeeklyDatesFromDaily(); });
+      weeklyDateEl.addEventListener("change", () => { weeklyDatePrettyEl.textContent = prettyYmdKo(weeklyDateEl.value); renderWeeklySummary(); });
 
-      if (weeklyDateEl) {
-        weeklyDateEl.addEventListener("change", () => {
-          if (weeklyDatePrettyEl) weeklyDatePrettyEl.textContent = prettyYmdKo(weeklyDateEl.value);
-          renderWeeklySummary();
-        });
-      }
+      dashMonthEl.addEventListener("input", () => { historyMonthEl.value = dashMonthEl.value; renderAll(); });
 
-      dashMonthEl.addEventListener("input", () => {
-        historyMonthEl.value = dashMonthEl.value;
-        renderAll();
-      });
-
-      // ---------- 설정(내보내기/가져오기/삭제) ----------
-      async function smartExport(filename, content, mime) {
-        const blob = new Blob([content], { type: mime });
-        const file = new File([blob], filename, { type: mime });
-
-        // 1) Share 우선
-        try {
-          if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
-            await navigator.share({ files: [file], title: filename });
-            return { ok: true, mode: "share" };
-          }
-        } catch {}
-
-        // 2) clipboard
-        try {
-          if (navigator.clipboard?.writeText) {
-            await navigator.clipboard.writeText(content);
-            return { ok: true, mode: "clipboard" };
-          }
-        } catch {}
-
-        // 3) 모달
-        showBackupModal(content);
-        return { ok: true, mode: "modal" };
-      }
-
+      // 내보내기/가져오기/삭제
       $("#exportJson").addEventListener("click", async () => {
         const payload = JSON.stringify({ exportedAt: new Date().toISOString(), entries }, null, 2);
         const filename = `ledger-backup-${monthISO(todayISO())}-${Date.now()}.json`;
@@ -1439,18 +1158,12 @@
       $("#exportCsv").addEventListener("click", async () => {
         const header = ["date", "type", "category", "amount", "memo"];
         const rows = entries.map((e) => [
-          e.date || "",
-          e.type || "",
-          e.category || "",
-          String(e.amount || 0),
+          e.date || "", e.type || "", e.category || "", String(e.amount || 0),
           (e.memo || "").replace(/\r?\n/g, " "),
         ]);
 
         const csvBody = [header, ...rows].map((cols) => cols.map(csvCell).join(",")).join("\n");
-
-        // ✅ 엑셀 한글 깨짐 방지 BOM
-        const csvWithBom = "\ufeff" + csvBody;
-
+        const csvWithBom = "\ufeff" + csvBody; // 엑셀 한글깨짐 방지
         const filename = `ledger-${monthISO(todayISO())}-${Date.now()}.csv`;
         const r = await smartExport(filename, csvWithBom, "text/csv;charset=utf-8");
         toast(r.mode === "share" ? "CSV 공유로 내보냄" : r.mode === "clipboard" ? "CSV가 복사됨" : "CSV 백업 텍스트 열림");
@@ -1460,35 +1173,40 @@
       $("#importBtn").addEventListener("click", async () => {
         const file = importFileEl.files && importFileEl.files[0];
         if (!file) return toast("JSON 파일을 먼저 선택해줘");
-
         const text = await file.text();
         const r = parseAndCleanImportedJson(text);
         if (!r.ok) return toast(r.msg);
+        applyImported(r.cleaned);
+        importFileEl.value = "";
+      });
 
-        const cleaned = r.cleaned;
+      $("#importTextBtn").addEventListener("click", () => {
+        const text = ($("#importText").value || "").trim();
+        if (!text) return toast("붙여넣을 JSON 텍스트가 없어");
+        const r = parseAndCleanImportedJson(text);
+        if (!r.ok) return toast(r.msg);
+        applyImported(r.cleaned);
+        $("#importText").value = "";
+      });
 
+      function applyImported(cleaned) {
         const merge = confirm("가져온 데이터를 기존 내역에 합칠까?\n확인: 합치기\n취소: 덮어쓰기");
         if (merge) {
           const byId = new Map(entries.map((e) => [e.id, e]));
           for (const e of cleaned) {
-            if (byId.has(e.id)) {
-              byId.set(uid(), { ...e, id: uid(), createdAt: Date.now() });
-            } else {
-              byId.set(e.id, e);
-            }
+            if (byId.has(e.id)) byId.set(uid(), { ...e, id: uid(), createdAt: Date.now() });
+            else byId.set(e.id, e);
           }
           entries = Array.from(byId.values());
         } else {
           if (!confirm("정말로 기존 내역을 덮어쓸까?")) return;
           entries = cleaned;
         }
-
         entries.sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.createdAt || 0) - (a.createdAt || 0));
         saveEntries(entries);
-        importFileEl.value = "";
         renderAll();
-        toast("가져오기 완료");
-      });
+        toast("복원 완료");
+      }
 
       function parseAndCleanImportedJson(text) {
         let data;
@@ -1511,38 +1229,9 @@
           }))
           .filter((x) => x.date && Number.isFinite(x.amount) && x.amount >= 1);
 
-        if (cleaned.length === 0) return { ok:false, msg:"가져올 유효한 데이터가 없어(금액은 1원 이상)" };
+        if (cleaned.length === 0) return { ok:false, msg:"유효 데이터가 없어(금액 1원 이상)" };
         return { ok:true, cleaned };
       }
-
-      $("#importTextBtn").addEventListener("click", () => {
-        const text = ($("#importText").value || "").trim();
-        if (!text) return toast("붙여넣을 JSON 텍스트가 없어");
-
-        const r = parseAndCleanImportedJson(text);
-        if (!r.ok) return toast(r.msg);
-
-        const cleaned = r.cleaned;
-
-        const merge = confirm("가져온 데이터를 기존 내역에 합칠까?\n확인: 합치기\n취소: 덮어쓰기");
-        if (merge) {
-          const byId = new Map(entries.map((e) => [e.id, e]));
-          for (const e of cleaned) {
-            if (byId.has(e.id)) byId.set(uid(), { ...e, id: uid(), createdAt: Date.now() });
-            else byId.set(e.id, e);
-          }
-          entries = Array.from(byId.values());
-        } else {
-          if (!confirm("정말로 기존 내역을 덮어쓸까?")) return;
-          entries = cleaned;
-        }
-
-        entries.sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.createdAt || 0) - (a.createdAt || 0));
-        saveEntries(entries);
-        $("#importText").value = "";
-        renderAll();
-        toast("붙여넣기 복원 완료");
-      });
 
       $("#clearAll").addEventListener("click", () => {
         if (!confirm("저장된 내역을 전부 삭제할까?")) return;
@@ -1552,7 +1241,7 @@
         toast("전체 삭제 완료");
       });
 
-      // ---------- 유틸 ----------
+      // 유틸
       function escapeHtml(str) {
         return String(str)
           .replaceAll("&", "&amp;")
@@ -1570,7 +1259,7 @@
         return `"${escaped}"`;
       }
 
-      // ---------- 초기값/렌더 ----------
+      // 초기
       function init() {
         wireBackupModal();
 
@@ -1589,7 +1278,6 @@
         refreshCategoryOptions();
 
         initDailyDateOptions();
-
         setHistoryPeriod("month");
         setHistoryType("expense");
 
